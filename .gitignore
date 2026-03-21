@@ -35,3 +35,10 @@ build/
 # Python
 __pycache__/
 *.pyc
+
+#AI model files
+*.h5
+
+#Images
+*.jpg
+*.png
