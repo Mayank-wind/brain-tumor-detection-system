@@ -140,6 +140,26 @@ TUMOR
 
 ---
 
+## API Testing
+
+This project provides a REST API to detect brain tumors from MRI images.
+
+### Endpoint
+POST /api/predict
+
+### Request
+- Method: POST
+- Content-Type: multipart/form-data
+- Body: Image file
+
+### Example (Postman)
+
+![API Result](screenshots/api-prediction-result.png)
+
+### Response
+- TUMOR → Tumor detected
+- NO_TUMOR → No tumor detected
+
 ## ⚠️ Notes
 
 * Ensure Python is installed
