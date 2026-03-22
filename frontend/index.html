@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brain Tumor Detection</title>
+</head>
+<body style="text-align:center; font-family:Arial;">
+
+<h1>Brain Tumor Detection</h1>
+
+<input type="file" id="fileInput"><br><br>
+
+<button onclick="uploadImage()">Predict</button>
+
+<h2 id="result"></h2>
+
+<script>
+    async function uploadImage() {
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert("Please select an image!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        document.getElementById("result").innerText = "Processing...";
+
+        try {
+            const response = await fetch("http://localhost:8080/api/predict", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            console.log(data); // debug
+
+            document.getElementById("result").innerText = data.prediction;
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById("result").innerText = "Error occurred";
+        }
+    }
+</script>
+
+</body>
+</html>
