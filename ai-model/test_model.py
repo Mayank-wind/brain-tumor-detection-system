@@ -21,7 +21,9 @@ img = np.reshape(img, (1, 256, 256, 3))
 
 pred = model.predict(img, verbose=0)
 
-if pred[0][0] > 0.5:
-    print("TUMOR")
+confidence = float(pred[0][0])
+
+if confidence > 0.5:
+    print(f"TUMOR:{confidence}")
 else:
-    print("NO_TUMOR")
+    print(f"NO_TUMOR:{1 - confidence}")

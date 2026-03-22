@@ -20,7 +20,7 @@ public class PredictionController {
     private PredictionService predictionService;
 
     @PostMapping("/predict")
-    public Map<String, String> predict(@RequestParam("file") MultipartFile file){
+    public Map<String, Object> predict(@RequestParam("file") MultipartFile file){
         try {
 
             File uploadDir = new File("P:/temp/uploads");
@@ -65,13 +65,29 @@ public class PredictionController {
                 result = line;
             }
 
-            Map<String, String> response = new HashMap<>();
-            response.put("prediction", result.trim());
+            String output = result.trim();
+
+            String[] parts = output.split(":");
+
+            if (parts.length < 2) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("error", "Invalid model output");
+                return error;
+            }
+
+            String prediction = parts[0];
+            double confidence = Double.parseDouble(parts[1]);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("prediction", prediction);
+            response.put("confidence", confidence);
+
             return response;
 
         } catch (Exception e) {
             e.printStackTrace();
-            Map<String, String> response = new HashMap<>();
+
+            Map<String, Object> response = new HashMap<>();
             response.put("error", "Something went wrong");
             return response;
         }
