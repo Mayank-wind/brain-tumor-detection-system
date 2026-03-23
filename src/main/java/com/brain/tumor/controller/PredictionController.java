@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -105,5 +106,10 @@ public class PredictionController {
             response.put("error", "Something went wrong");
             return response;
         }
+    }
+
+    @GetMapping("/history")
+    public List<Prediction> getHistory() {
+        return predictionRepository.findAll();
     }
 }
