@@ -3,17 +3,33 @@
 <head>
     <title>Brain Tumor Detection</title>
 </head>
-<body style="text-align:center; font-family:Arial;">
 
-<h1>Brain Tumor Detection</h1>
+<body style="text-align:center; font-family:Arial; background:#f5f5f5;">
 
-<input type="file" id="fileInput"><br><br>
+<h1>👽✌️ Brain Tumor Detection</h1>
 
-<button onclick="uploadImage()">Predict</button>
+<input type="file" id="fileInput" onchange="previewImage()"><br><br>
+
+<img id="preview" width="200" style="display:none; border-radius:10px;"><br><br>
+
+<button onclick="uploadImage()" style="padding:10px 20px; font-size:16px;">
+    Predict
+</button>
 
 <h2 id="result"></h2>
 
 <script>
+
+    function previewImage() {
+        const file = document.getElementById("fileInput").files[0];
+        const preview = document.getElementById("preview");
+
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        }
+    }
+
     async function uploadImage() {
         const fileInput = document.getElementById("fileInput");
         const file = fileInput.files[0];
@@ -26,7 +42,9 @@
         const formData = new FormData();
         formData.append("file", file);
 
-        document.getElementById("result").innerText = "Processing...";
+        const resultText = document.getElementById("result");
+        resultText.innerText = "😚Processing...";
+        resultText.style.color = "black";
 
         try {
             const response = await fetch("http://localhost:8080/api/predict", {
@@ -36,15 +54,23 @@
 
             const data = await response.json();
 
-            console.log(data); // debug
-
-            document.getElementById("result").innerText = data.prediction;
+            if (data.prediction === "TUMOR") {
+                resultText.innerText =
+                    "🤦‍♂️Tumor Detected (" + (data.confidence * 100).toFixed(2) + "%)";
+                resultText.style.color = "red";
+            } else {
+                resultText.innerText =
+                    "😁No Tumor (" + (data.confidence * 100).toFixed(2) + "%)";
+                resultText.style.color = "green";
+            }
 
         } catch (error) {
             console.error(error);
-            document.getElementById("result").innerText = "Error occurred";
+            resultText.innerText = "❌ Error occurred";
+            resultText.style.color = "black";
         }
     }
+
 </script>
 
 </body>

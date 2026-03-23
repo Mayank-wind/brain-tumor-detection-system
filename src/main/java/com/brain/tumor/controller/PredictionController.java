@@ -1,5 +1,7 @@
 package com.brain.tumor.controller;
 import com.brain.tumor.dto.PredictionResponseDTO;
+import com.brain.tumor.model.Prediction;
+import com.brain.tumor.repository.PredictionRepository;
 import com.brain.tumor.service.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +21,9 @@ public class PredictionController {
 
     @Autowired
     private PredictionService predictionService;
+
+    @Autowired
+    private PredictionRepository predictionRepository;
 
     @PostMapping("/predict")
     public Map<String, Object> predict(@RequestParam("file") MultipartFile file){
@@ -81,6 +87,14 @@ public class PredictionController {
             Map<String, Object> response = new HashMap<>();
             response.put("prediction", prediction);
             response.put("confidence", confidence);
+
+            Prediction p = new Prediction();
+            p.setImageName(file.getOriginalFilename());
+            p.setPrediction(prediction);
+            p.setConfidence(confidence);
+            p.setTimestamp(LocalDateTime.now());
+
+            predictionRepository.save(p);
 
             return response;
 
