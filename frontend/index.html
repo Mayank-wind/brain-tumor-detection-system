@@ -1,22 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Brain Tumor Detection</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .container {
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            margin: auto;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        #preview {
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
-<body style="text-align:center; font-family:Arial; background:#f5f5f5;">
+<body>
 
-<h1>👽✌️ Brain Tumor Detection</h1>
+<div class="container">
 
-<input type="file" id="fileInput" onchange="previewImage()"><br><br>
+    <h2>🤕Brain Tumor Detection🤯</h2>
 
-<img id="preview" width="200" style="display:none; border-radius:10px;"><br><br>
+    <input type="file" id="fileInput" onchange="previewImage()"><br><br>
 
-<button onclick="uploadImage()" style="padding:10px 20px; font-size:16px;">
-    Predict
-</button>
+    <img id="preview" width="200" style="display:none;"><br>
 
-<h2 id="result"></h2>
+    <button onclick="uploadImage()">Predict</button>
+
+    <div id="result"></div>
+
+</div>
 
 <script>
 
@@ -31,8 +79,7 @@
     }
 
     async function uploadImage() {
-        const fileInput = document.getElementById("fileInput");
-        const file = fileInput.files[0];
+        const file = document.getElementById("fileInput").files[0];
 
         if (!file) {
             alert("Please select an image!");
@@ -43,8 +90,7 @@
         formData.append("file", file);
 
         const resultText = document.getElementById("result");
-        resultText.innerText = "😚Processing...";
-        resultText.style.color = "black";
+        resultText.innerText = "🤔 Processing...";
 
         try {
             const response = await fetch("http://localhost:8080/api/predict", {
@@ -60,14 +106,12 @@
                 resultText.style.color = "red";
             } else {
                 resultText.innerText =
-                    "😁No Tumor (" + (data.confidence * 100).toFixed(2) + "%)";
+                    "😁✌️No Tumor (" + (data.confidence * 100).toFixed(2) + "%)";
                 resultText.style.color = "green";
             }
 
-        } catch (error) {
-            console.error(error);
-            resultText.innerText = "❌ Error occurred";
-            resultText.style.color = "black";
+        } catch (e) {
+            resultText.innerText = "❌👺 Error";
         }
     }
 
