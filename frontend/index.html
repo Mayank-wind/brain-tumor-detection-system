@@ -318,8 +318,8 @@
         lastPrediction = data.prediction;
         lastConfidence = data.confidence;
 
-        if (data.prediction === "🤦‍♂️ TUMOR") {
-            result.innerText = "Tumor Detected (" + (data.confidence * 100).toFixed(2) + "%)";
+        if (data.prediction === "TUMOR") {
+            result.innerText = "🤦‍♂️ Tumor Detected (" + (data.confidence * 100).toFixed(2) + "%)";
             result.style.color = "red";
         } else {
             result.innerText = "👌😉 No Tumor (" + (data.confidence * 100).toFixed(2) + "%)";
