@@ -26,28 +26,32 @@ public class ChatController {
             String prompt;
 
             if (question != null && !question.isEmpty()) {
+                prompt = "A brain MRI scan result shows: " + prediction +
+                        " with confidence " + (confidence * 100) + "%.\n\n" +
 
-                // 🔥 User asked something
-                prompt = "A patient has been diagnosed with " + prediction +
-                        " with " + (confidence * 100) + "% confidence.\n\n" +
+                        "Conversation:\n" + question + "\n\n" +
 
-                        "User question: " + question + "\n\n" +
+                        "Answer the user's latest question clearly.\n" +
+                        "Also consider:\n" +
+                        "- Possible tumor type\n" +
+                        "- Severity level\n" +
+                        "- Simple explanation\n" +
+                        "- Precautions\n\n" +
 
-                        "Answer clearly in simple language. Do NOT prescribe medicine.";
+                        "Do NOT prescribe medicine.";
 
             } else {
+                prompt = "A brain MRI scan result shows: " + prediction +
+                        " with confidence " + (confidence * 100) + "%.\n\n" +
 
-                // 🔥 Default explanation
-                prompt = "A patient has been diagnosed with " + prediction +
-                        " with " + (confidence * 100) + "% confidence.\n\n" +
+                        "Explain in simple medical terms:\n" +
+                        "1. Possible tumor type (if tumor)\n" +
+                        "2. Severity level (low / medium / high)\n" +
+                        "3. General idea of tumor size (small / medium / large)\n" +
+                        "4. What this means for the patient\n" +
+                        "5. Precautions and next steps\n\n" +
 
-                        "Explain:\n" +
-                        "1. What this means\n" +
-                        "2. Precautions\n" +
-                        "3. Lifestyle advice\n" +
-                        "4. When to consult a doctor\n\n" +
-
-                        "Keep it simple and safe.";
+                        "Keep it simple, safe, and informative.";
             }
 
             URL url = new URL("http://localhost:11434/api/generate");
@@ -92,7 +96,7 @@ public class ChatController {
             if (fullResponse.contains("\"response\"")) {
                 aiText = fullResponse.split("\"response\":\"")[1].split("\"")[0];
 
-                // 🔥 CLEAN TEXT
+
                 aiText = aiText.replace("\\n", "\n");   // fix new lines
                 aiText = aiText.replace("**", "");      // remove bold markdown
                 aiText = aiText.replace("\\t", " ");    // remove tabs

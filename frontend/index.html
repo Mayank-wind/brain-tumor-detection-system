@@ -201,6 +201,34 @@
         scroll-behavior: smooth;
         }
 
+        .file-upload {
+    margin-top: 15px;
+}
+
+.custom-file-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.custom-file-btn:hover {
+    background: #2563eb;
+}
+
+#fileInput {
+    display: none;
+}
+
+#fileName {
+    display: block;
+    margin-top: 10px;
+    color: gray;
+    font-size: 14px;
+}
+
     </style>
 </head>
 
@@ -244,7 +272,13 @@
 
     <input type="text" placeholder="Test name (optional)"><br>
 
-    <input type="file" id="fileInput" onchange="resetButton()"><br>
+    <div class="file-upload">
+        <label for="fileInput" class="custom-file-btn">
+            📂 Choose Brain Scan
+        </label>
+        <span id="fileName">No file selected</span>
+        <input type="file" id="fileInput" onchange="handleFileSelect()">
+    </div>
 
     <button id="predictBtn" onclick="uploadImage()">Predict</button>
 
@@ -336,6 +370,7 @@
     setTimeout(() => {
         btn.disabled = false;
     }, 1500);
+    askAI();
 }
 
     async function loadHistory() {
@@ -380,14 +415,17 @@
     }
 
     const question = document.getElementById("userQuestion").value;
-    if (!question) return;
+    if (!question && !lastPrediction) return;
+    const isAuto = !question;
 
+    if (!isAuto) {
     const userMsg = document.createElement("div");
     userMsg.className = "user-msg";
     userMsg.innerText = question;
     chatBox.appendChild(userMsg);
 
     chatHistory.push("User: " + question);
+}
 
     document.getElementById("userQuestion").value = "";
 
@@ -407,7 +445,7 @@
             body: JSON.stringify({
                 prediction: lastPrediction,
                 confidence: lastConfidence,
-                question: chatHistory.join("\n")
+                question: isAuto ? "" : chatHistory.join("\n")
             })
         });
         const data = await response.text();
@@ -433,6 +471,16 @@
         askAI();
     }
 });
+
+    function handleFileSelect() {
+    const file = document.getElementById("fileInput").files[0];
+    const fileName = document.getElementById("fileName");
+
+    if (file) {
+        fileName.innerText = "🫣 " + file.name;
+        resetButton(); // your existing function
+    }
+}
 
 </script>
 
