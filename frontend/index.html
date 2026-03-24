@@ -67,7 +67,7 @@
             top: 0;
             width: 300px;
             height: 100%;
-            background: white;
+            background: #bfdbfe;
             box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
             padding: 20px;
             transition: 0.3s;
@@ -158,7 +158,48 @@
         #predictBtn:disabled {
         opacity: 0.7;
         cursor: not-allowed;
-}
+        }
+
+        #chatMessages {
+        height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        }
+
+        .user-msg {
+        background: #667eea;
+        color: white;
+        padding: 8px;
+        border-radius: 10px;
+        align-self: flex-end;
+        max-width: 80%;
+        }
+
+        .bot-msg {
+        background: #f1f1f1;
+        color: black;
+        padding: 8px;
+        border-radius: 10px;
+        align-self: flex-start;
+        max-width: 80%;
+        }
+
+        .chat-bg {
+        position: absolute;
+        width: 120px;
+        opacity: 0.08;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        }
+
+        #chatMessages {
+        scroll-behavior: smooth;
+        }
 
     </style>
 </head>
@@ -171,15 +212,16 @@
 
 
 <div id="chatSidebar" class="sidebar">
-
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+         class="chat-bg">
     <div id="chatArrow" class="arrow-btn" onclick="toggleChat()">❮</div>
 
     <h3 style="margin-top: 45px;">🐧 AI Assistant</h3>
 
-    <input type="text" id="userQuestion" placeholder="Ask..." style="width:80%">
+    <input type="text" id="userQuestion" placeholder="Ask about your condition 🫡" style="width:80%">
     <button onclick="askAI()">Send</button>
 
-    <div id="chatbotResponse"></div>
+    <div id="chatMessages"></div>
 </div>
 
 
@@ -211,7 +253,7 @@
 </div>
 
 <script>
-
+    let chatHistory = [];
     let lastPrediction = "";
     let lastConfidence = 0;
 
@@ -329,29 +371,55 @@
     }
 
     async function askAI() {
-        const question = document.getElementById("userQuestion").value;
-        const box = document.getElementById("chatbotResponse");
+    const chatBox = document.getElementById("chatMessages");
 
-        box.innerText = "🤔 Thinking...";
-
-        try {
-            const res = await fetch("http://localhost:8080/api/chat", {
-                method: "POST",
-                headers: {"Content-Type":"application/json"},
-                body: JSON.stringify({
-                    prediction: lastPrediction,
-                    confidence: lastConfidence,
-                    question: question
-                })
-            });
-
-            const text = await res.text();
-            box.innerText = text;
-
-        } catch {
-            box.innerText = "AI Error, please check ollama is running or not";
-        }
+    if(!chatBox){
+    console.error("ChatMessages not found ");
+    alert("Chat UI missing!");
+    return;
     }
+
+    const question = document.getElementById("userQuestion").value;
+    if (!question) return;
+
+    const userMsg = document.createElement("div");
+    userMsg.className = "user-msg";
+    userMsg.innerText = question;
+    chatBox.appendChild(userMsg);
+
+    chatHistory.push("User: " + question);
+
+    document.getElementById("userQuestion").value = "";
+
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot-msg";
+    botMsg.innerText = "🤔 Thinking...";
+    chatBox.appendChild(botMsg);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        const response = await fetch("http://localhost:8080/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prediction: lastPrediction,
+                confidence: lastConfidence,
+                question: chatHistory.join("\n")
+            })
+        });
+        const data = await response.text();
+        botMsg.innerText = data;
+        chatHistory.push("AI: " + data);
+
+    } catch (e) {
+        botMsg.innerText = "❌ AI Error";
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
 
     function resetButton() {
     const btn = document.getElementById("predictBtn");
@@ -359,6 +427,12 @@
     btn.innerText = "Predict";
     btn.disabled = false;
 }
+    document.getElementById("userQuestion").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // stop page refresh
+        askAI();
+    }
+});
 
 </script>
 
