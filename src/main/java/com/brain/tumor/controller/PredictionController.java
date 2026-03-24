@@ -4,6 +4,7 @@ import com.brain.tumor.model.Prediction;
 import com.brain.tumor.repository.PredictionRepository;
 import com.brain.tumor.service.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -110,6 +111,10 @@ public class PredictionController {
 
     @GetMapping("/history")
     public List<Prediction> getHistory() {
-        return predictionRepository.findAll();
+        return predictionRepository
+                .findAll(Sort.by(Sort.Direction.DESC, "timestamp"))
+                .stream()
+                .limit(5)
+                .toList();
     }
 }

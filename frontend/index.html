@@ -54,6 +54,8 @@
 
 <div class="container">
 
+
+
     <h2>🤕Brain Tumor Detection🤯</h2>
 
     <input type="file" id="fileInput" onchange="previewImage()"><br><br>
@@ -67,9 +69,18 @@
     <h3>🦭🧐Prediction History</h3>
     <ul id="historyList"></ul>
 
+    <input type="text" id="userQuestion" placeholder="Ask something..." style="width: 80%; padding: 8px;">
+    <br><br>
+    <button onclick="askAI()">Ask AI</button>
+    <div id="chatbotResponse"
+         style="margin-top:15px; color:black; background:#f1f1f1; padding:10px; border-radius:8px; max-height:200px; overflow:auto;">
+    </div>
+
 </div>
 
 <script>
+    let lastPrediction = "";
+    let lastConfidence = 0;
 
     function previewImage() {
         const file = document.getElementById("fileInput").files[0];
@@ -102,6 +113,8 @@
             });
 
             const data = await response.json();
+            lastPrediction = data.prediction;
+            lastConfidence = data.confidence;
 
             if (data.prediction === "TUMOR") {
                 resultText.innerText =
@@ -142,8 +155,46 @@
     } catch (e) {
         console.error("Error loading history");
     }
-    loadHistory();
 }
+    async function askAI() {
+    const question = document.getElementById("userQuestion").value || "";
+
+    if (!lastPrediction) {
+    alert("Please predict first or ask a question!");
+    return;
+    }
+
+    const responseBox = document.getElementById("chatbotResponse");
+    responseBox.innerText = "🐧 Thinking...";
+
+    try {
+        const response = await fetch("http://localhost:8080/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prediction: lastPrediction,
+                confidence: lastConfidence,
+                question: question
+            })
+        });
+
+        const data = await response.text();
+
+        responseBox.innerText = data;
+
+    } catch (e) {
+        responseBox.innerText = "🤯 AI Error";
+    }
+
+}
+    loadHistory();
+
+     document.getElementById("userQuestion").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        askAI();
+    }});
 
 </script>
 
