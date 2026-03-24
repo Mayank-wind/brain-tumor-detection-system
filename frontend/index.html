@@ -6,195 +6,359 @@
 
     <style>
         body {
+            margin: 0;
             font-family: Arial;
             background: linear-gradient(to right, #667eea, #764ba2);
-            color: white;
-            text-align: center;
-            margin-top: 50px;
         }
 
+
         .container {
+            position: relative;
+            width: 500px;
+            margin: 120px auto;
+            padding: 40px;
             background: white;
-            color: black;
-            padding: 30px;
-            border-radius: 12px;
-            width: 350px;
-            margin: auto;
-            box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .container * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .brain-bg {
+            position: absolute;
+            width: 300px;
+            opacity: 0.08;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 6px;
         }
 
         button {
-            background: #667eea;
+            background: #2b6cb0;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
         }
 
         button:hover {
-            background: #5a67d8;
-        }
-
-        #preview {
-            margin-top: 15px;
-            border-radius: 10px;
+            background: #1e4e8c;
         }
 
         #result {
             margin-top: 20px;
-            font-size: 18px;
             font-weight: bold;
         }
+
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background: white;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        #chatSidebar {
+            left: -320px;
+        }
+
+        #historySidebar {
+            right: -320px;
+        }
+
+
+        #chatSidebar.open {
+            left: 0;
+        }
+
+        #historySidebar.open {
+            right: 0;
+        }
+
+
+        .arrow-btn {
+            position: absolute;
+            top: 20px;
+            width: 32px;
+            height: 32px;
+            background: #2b6cb0;
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+
+            z-index: 9999;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        #chatArrow {
+            right: -20px;
+        }
+
+        #historyArrow {
+            left: -20px;
+        }
+
+
+        .top-btn {
+            position: fixed;
+            top: 20px;
+            padding: 12px;
+            background: #2b6cb0;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2000;
+        }
+
+        #chatBtn { left: 20px; }
+        #historyBtn { right: 20px; }
+
+        /* HISTORY CARD */
+        .history-card {
+            background: #f5f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .history-card:hover {
+            background: #e0e7ff;
+        }
+
+        .history-title {
+            font-weight: bold;
+        }
+
+        .history-result {
+            font-size: 14px;
+            color: gray;
+        }
+
+        #predictBtn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+}
+
     </style>
 </head>
 
 <body>
 
+
+<div id="chatBtn" class="top-btn" onclick="toggleChat()">🐧Chatbot</div>
+<div id="historyBtn" class="top-btn" onclick="toggleHistory()">🧐Histories</div>
+
+
+<div id="chatSidebar" class="sidebar">
+
+    <div id="chatArrow" class="arrow-btn" onclick="toggleChat()">❮</div>
+
+    <h3 style="margin-top: 45px;">🐧 AI Assistant</h3>
+
+    <input type="text" id="userQuestion" placeholder="Ask..." style="width:80%">
+    <button onclick="askAI()">Send</button>
+
+    <div id="chatbotResponse"></div>
+</div>
+
+
+<div id="historySidebar" class="sidebar">
+
+    <div id="historyArrow" class="arrow-btn" onclick="toggleHistory()">❯</div>
+
+    <h3>🤓 History</h3>
+
+    <div id="historyList"></div>
+</div>
+
+
 <div class="container">
 
+    <img class="brain-bg"
+         src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Brain_MRI.jpg">
 
+    <h2>🧠 Brain Tumor Detection </h2>
 
-    <h2>🤕Brain Tumor Detection🤯</h2>
+    <input type="text" placeholder="Test name (optional)"><br>
 
-    <input type="file" id="fileInput" onchange="previewImage()"><br><br>
+    <input type="file" id="fileInput" onchange="resetButton()"><br>
 
-    <img id="preview" width="200" style="display:none;"><br>
-
-    <button onclick="uploadImage()">Predict</button>
+    <button id="predictBtn" onclick="uploadImage()">Predict</button>
 
     <div id="result"></div>
-
-    <h3>🦭🧐Prediction History</h3>
-    <ul id="historyList"></ul>
-
-    <input type="text" id="userQuestion" placeholder="Ask something..." style="width: 80%; padding: 8px;">
-    <br><br>
-    <button onclick="askAI()">Ask AI</button>
-    <div id="chatbotResponse"
-         style="margin-top:15px; color:black; background:#f1f1f1; padding:10px; border-radius:8px; max-height:200px; overflow:auto;">
-    </div>
 
 </div>
 
 <script>
+
     let lastPrediction = "";
     let lastConfidence = 0;
 
-    function previewImage() {
-        const file = document.getElementById("fileInput").files[0];
-        const preview = document.getElementById("preview");
+    function toggleChat() {
+        const chat = document.getElementById("chatSidebar");
+        const arrow = document.getElementById("chatArrow");
 
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = "block";
+        const isOpen = chat.classList.contains("open");
+
+        if (isOpen) {
+            chat.classList.remove("open");
+            arrow.style.display = "none";
+        } else {
+            chat.classList.add("open");
+            arrow.style.display = "flex";
+        }
+    }
+
+    function toggleHistory() {
+        const history = document.getElementById("historySidebar");
+        const arrow = document.getElementById("historyArrow");
+
+        const isOpen = history.classList.contains("open");
+
+        if (isOpen) {
+            history.classList.remove("open");
+            arrow.style.display = "none";
+        } else {
+            history.classList.add("open");
+            arrow.style.display = "flex";
+            loadHistory();
         }
     }
 
     async function uploadImage() {
-        const file = document.getElementById("fileInput").files[0];
+    const file = document.getElementById("fileInput").files[0];
+    const btn = document.getElementById("predictBtn");
 
-        if (!file) {
-            alert("Please select an image!");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const resultText = document.getElementById("result");
-        resultText.innerText = "🤔 Processing...";
-
-        try {
-            const response = await fetch("http://localhost:8080/api/predict", {
-                method: "POST",
-                body: formData
-            });
-
-            const data = await response.json();
-            lastPrediction = data.prediction;
-            lastConfidence = data.confidence;
-
-            if (data.prediction === "TUMOR") {
-                resultText.innerText =
-                    "🤦‍♂️Tumor Detected (" + (data.confidence * 100).toFixed(2) + "%)";
-                resultText.style.color = "red";
-            } else {
-                resultText.innerText =
-                    "😁✌️No Tumor (" + (data.confidence * 100).toFixed(2) + "%)";
-                resultText.style.color = "green";
-            }
-
-        } catch (e) {
-            resultText.innerText = "❌👺 Error";
-        }
-        loadHistory();
+    if (!file) {
+        alert("Select image");
+        return;
     }
 
-    async function loadHistory() {
+    // 🔄 Change button to loading
+    btn.innerText = "🤔 Predicting...";
+    btn.disabled = true;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const result = document.getElementById("result");
+    result.innerText = "🤐 Processing...";
+
     try {
-        const response = await fetch("http://localhost:8080/api/history");
-        const data = await response.json();
+        const res = await fetch("http://localhost:8080/api/predict", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        lastPrediction = data.prediction;
+        lastConfidence = data.confidence;
+
+        if (data.prediction === "🤦‍♂️ TUMOR") {
+            result.innerText = "Tumor Detected (" + (data.confidence * 100).toFixed(2) + "%)";
+            result.style.color = "red";
+        } else {
+            result.innerText = "👌😉 No Tumor (" + (data.confidence * 100).toFixed(2) + "%)";
+            result.style.color = "green";
+        }
+
+        btn.innerText = "✅ Predicted";
+
+    } catch (e) {
+        result.innerText = "Error";
+        btn.innerText = "❌ Error";
+    }
+
+    setTimeout(() => {
+        btn.disabled = false;
+    }, 1500);
+}
+
+    async function loadHistory() {
+        const res = await fetch("http://localhost:8080/api/history");
+        const data = await res.json();
 
         const list = document.getElementById("historyList");
         list.innerHTML = "";
 
-        data.reverse().forEach(item => {
-            const li = document.createElement("li");
+        data.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "history-card";
 
             const confidence = (item.confidence * 100).toFixed(2);
 
-            li.innerText =
-                item.imageName + " → " +
-                item.prediction + " (" + confidence + "%)";
+            card.innerHTML = `
+                <div class="history-title">${item.imageName}</div>
+                <div class="history-result">
+                    ${item.prediction} (${confidence}%)
+                </div>
+            `;
 
-            list.appendChild(li);
+            card.onclick = () => {
+                alert(
+                    "Name: " + item.imageName + "\n" +
+                    "Result: " + item.prediction + "\n" +
+                    "Confidence: " + confidence + "%"
+                );
+            };
+
+            list.appendChild(card);
         });
-
-    } catch (e) {
-        console.error("Error loading history");
     }
-}
+
     async function askAI() {
-    const question = document.getElementById("userQuestion").value || "";
+        const question = document.getElementById("userQuestion").value;
+        const box = document.getElementById("chatbotResponse");
 
-    if (!lastPrediction) {
-    alert("Please predict first or ask a question!");
-    return;
+        box.innerText = "🤔 Thinking...";
+
+        try {
+            const res = await fetch("http://localhost:8080/api/chat", {
+                method: "POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({
+                    prediction: lastPrediction,
+                    confidence: lastConfidence,
+                    question: question
+                })
+            });
+
+            const text = await res.text();
+            box.innerText = text;
+
+        } catch {
+            box.innerText = "AI Error, please check ollama is running or not";
+        }
     }
 
-    const responseBox = document.getElementById("chatbotResponse");
-    responseBox.innerText = "🐧 Thinking...";
+    function resetButton() {
+    const btn = document.getElementById("predictBtn");
 
-    try {
-        const response = await fetch("http://localhost:8080/api/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                prediction: lastPrediction,
-                confidence: lastConfidence,
-                question: question
-            })
-        });
-
-        const data = await response.text();
-
-        responseBox.innerText = data;
-
-    } catch (e) {
-        responseBox.innerText = "🤯 AI Error";
-    }
-
+    btn.innerText = "Predict";
+    btn.disabled = false;
 }
-    loadHistory();
-
-     document.getElementById("userQuestion").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        askAI();
-    }});
 
 </script>
 
