@@ -52,6 +52,15 @@
             cursor: pointer;
         }
 
+        button {
+        transition: 0.2s;
+        }
+
+        button:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+        }
+
         button:hover {
             background: #1e4e8c;
         }
@@ -72,6 +81,19 @@
             padding: 20px;
             transition: 0.3s;
             z-index: 1000;
+        }
+
+        #historySidebar::before {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background: url('https://cdn-icons-png.flaticon.com/512/2966/2966485.png') no-repeat center;
+        background-size: contain;
+        opacity: 0.15;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         }
 
         #chatSidebar {
@@ -132,7 +154,6 @@
         #chatBtn { left: 20px; }
         #historyBtn { right: 20px; }
 
-        /* HISTORY CARD */
         .history-card {
             background: #f5f7ff;
             padding: 10px;
@@ -229,7 +250,7 @@
     font-size: 14px;
 }
 
-        .report-card {
+    .report-card {
     margin-top: 20px;
     padding: 20px;
     background: #f8fafc;
@@ -239,11 +260,11 @@
     animation: fadeIn 0.4s ease;
 }
 
-.report-item {
+    .report-item {
     margin: 10px 0;
 }
 
-.badge {
+    .badge {
     display: inline-block;
     padding: 5px 10px;
     border-radius: 8px;
@@ -251,11 +272,11 @@
     color: white;
 }
 
-.high { background: #ef4444; }
-.medium { background: #f59e0b; }
-.low { background: #22c55e; }
+    .high { background: #ef4444; }
+    .medium { background: #f59e0b; }
+    .low { background: #22c55e; }
 
-@keyframes fadeIn {
+    @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
@@ -301,7 +322,7 @@
 
     <h2>🧠 Brain Tumor Detection </h2>
 
-    <input type="text" placeholder="Test name (optional)"><br>
+    <input type="text" id="testName" placeholder="Test name (optional)"><br>
 
     <div class="file-upload">
         <label for="fileInput" class="custom-file-btn">
@@ -363,7 +384,7 @@
         return;
     }
 
-    // 🔄 Change button to loading
+
     btn.innerText = "🤔 Predicting...";
     btn.disabled = true;
 
@@ -419,10 +440,11 @@
             const confidence = (item.confidence * 100).toFixed(2);
 
             card.innerHTML = `
-                <div class="history-title">${item.imageName}</div>
-                <div class="history-result">
-                    ${item.prediction} (${confidence}%)
-                </div>
+            <div class="history-title">${item.imageName}</div>
+            <div class="history-result">
+            ${item.prediction} (${confidence}%)
+            </div>
+            <button onclick="deleteHistory(${item.id})">❌ Delete</button>
             `;
 
             card.onclick = () => {
@@ -483,11 +505,9 @@
         const data = await response.text();
         botMsg.innerText = data;
 
-// 🔥 CREATE MEDICAL REPORT
 const report = document.getElementById("aiReport");
 report.style.display = "block";
 
-// Basic parsing (simple smart split)
 let severity = "low";
 if (data.toLowerCase().includes("high")) severity = "high";
 else if (data.toLowerCase().includes("medium")) severity = "medium";
@@ -549,6 +569,13 @@ report.innerHTML = `
         fileName.innerText = "🫣 " + file.name;
         resetButton(); // your existing function
     }
+}
+    async function deleteHistory(id) {
+    await fetch(`http://localhost:8080/api/history/${id}`, {
+        method: "DELETE"
+    });
+
+    loadHistory();
 }
 
 </script>

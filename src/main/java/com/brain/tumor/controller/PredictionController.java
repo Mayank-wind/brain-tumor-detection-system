@@ -28,7 +28,7 @@ public class PredictionController {
     private PredictionRepository predictionRepository;
 
     @PostMapping("/predict")
-    public Map<String, Object> predict(@RequestParam("file") MultipartFile file){
+    public Map<String, Object> predict(@RequestParam("file") MultipartFile file, @RequestParam(value = "testName", required = false) String testName){
         try {
 
             File uploadDir = new File("P:/temp/uploads");
@@ -91,7 +91,11 @@ public class PredictionController {
             response.put("confidence", confidence);
 
             Prediction p = new Prediction();
-            p.setImageName(file.getOriginalFilename());
+            if (testName != null && !testName.isEmpty()) {
+                p.setImageName(testName);
+            } else {
+                p.setImageName(file.getOriginalFilename());
+            }
             p.setPrediction(prediction);
             p.setConfidence(confidence);
             p.setTimestamp(LocalDateTime.now());
@@ -114,7 +118,13 @@ public class PredictionController {
         return predictionRepository
                 .findAll(Sort.by(Sort.Direction.DESC, "timestamp"))
                 .stream()
-                .limit(5)
+                .limit(10)
                 .toList();
+    }
+
+    @DeleteMapping("/history/{id}")
+    public String delete(@PathVariable Long id) {
+        predictionRepository.deleteById(id);
+        return "Deleted";
     }
 }
