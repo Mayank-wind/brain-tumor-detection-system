@@ -1,189 +1,236 @@
-# 🧠 Brain Tumor Detection System (AI + Spring Boot)
+🧠 Brain Tumor Detection & AI Medical Assistant
 
-An AI-powered web backend that detects brain tumors from MRI images using a deep learning model.
-This project integrates **Spring Boot (Java)** with a **Python-based AI model (TensorFlow/Keras)** for real-time predictions.
-
----
-
-## 🚀 Features
-
-* 📤 Upload MRI image via API
-* 🤖 AI model predicts tumor presence
-* ⚡ Fast integration between Java & Python
-* 🔄 Real-time prediction response
-* 🧩 Clean modular architecture (Controller, Service, etc.)
+«🚀 An AI-powered full-stack web application that detects brain tumors from MRI scans and provides intelligent medical explanations via an integrated chatbot.»
 
 ---
 
-## 🛠️ Tech Stack
+🌟 Overview
 
-### Backend
+This project combines AI + Full Stack Development to solve a real-world healthcare problem.
 
-* Java (Spring Boot)
-* REST API
-* Multipart File Upload
-
-### AI / ML
-
-* Python
-* TensorFlow / Keras
-* OpenCV
-* NumPy
-
-### Tools
-
-* Postman (API Testing)
-* IntelliJ IDEA
-* Git & GitHub
+Users can upload MRI scans, get instant tumor predictions with confidence scores, and interact with an AI assistant to understand the results in simple medical terms.
 
 ---
 
-## 📁 Project Structure
+✨ Key Highlights
 
-```
-brain-tumor-backend/
+- 🧠 Deep Learning-based tumor detection
+- 🤖 AI chatbot for medical explanation
+- 📊 Confidence-based prediction system
+- 📂 Smart history tracking with delete functionality
+- 📝 Custom test naming (like real medical reports)
+- ⚡ Smooth and responsive UI with sidebar interactions
+- 🔄 Real-time API communication
+
+---
+
+🧩 System Architecture
+
+[Frontend (HTML/CSS/JS)]
+↓
+[Spring Boot Backend (REST API)]
+↓
+[AI Model (Python)]
+↓
+[Database (MySQL)]
+
+---
+
+🛠️ Tech Stack
+
+🔹 Frontend
+
+- HTML5
+- CSS3 (Custom UI, Sidebar, Glassmorphism effects)
+- JavaScript (Fetch API, Async/Await)
+
+🔹 Backend
+
+- Java (Spring Boot)
+- REST API Architecture
+- MVC Design Pattern
+
+🔹 Database
+
+- MySQL
+
+🔹 AI Model
+
+- Python (MRI classification model)
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Main UI
+![Main UI](./screenshots/main.png)
+
+### 🧠 Prediction Result
+![Prediction](./screenshots/result.png)
+
+### 🤖 AI Chatbot
+![Chatbot](./screenshots/chat.png)
+
+### 🕓 History Panel
+![History](./screenshots/history.png)
+
+---
+
+⚙️ Features Breakdown
+
+🧠 Tumor Detection
+
+- Upload MRI scan
+- Predict tumor presence
+- Display confidence score
+
+🤖 AI Assistant
+
+- Explains results in simple language
+- Provides severity insights
+- Answers follow-up questions
+
+📂 History System
+
+- Stores all predictions
+- Custom naming support
+- Delete individual records
+- Smooth scroll with isolation
+
+🎨 UI/UX Enhancements
+
+- Sidebar navigation
+- Scroll isolation fix
+- Interactive buttons & animations
+
+---
+
+🔌 API Endpoints
+
+Method| Endpoint| Description
+POST| "/api/predict"| Upload MRI and get prediction
+GET| "/api/history"| Fetch all saved reports
+DELETE| "/api/history/{id}"| Delete a specific record
+POST| "/api/chat"| AI chatbot interaction
+
+---
+
+▶️ Getting Started
+
+🔹 Clone Repository
+
+git clone https://github.com/your-username/brain-tumor-detection.git
+cd brain-tumor-detection
+
+---
+
+🔹 Run Backend (Spring Boot)
+
+cd backend
+mvn spring-boot:run
+
+---
+
+🔹 Run Frontend
+
+Open:
+
+frontend/index.html
+
+---
+
+🧠 AI Assistant Logic
+
+The chatbot dynamically uses:
+
+- Prediction result
+- Confidence score
+- User queries
+
+To generate:
+
+- Tumor explanation
+- Severity level
+- General insights
+
+⚠️ Note: This system does NOT prescribe medicines.
+
+---
+
+📊 Real-World Impact
+
+- 🏥 Helps in early-stage tumor awareness
+- 🧑‍⚕️ Simplifies medical reports for non-experts
+- 💡 Demonstrates AI in healthcare
+
+---
+
+🚧 Challenges Solved
+
+- 🔄 Frontend ↔ Backend integration
+- 📡 Async API handling
+- 🧠 AI response structuring
+- 🖱️ UI bugs (scroll conflict, event bubbling fix)
+- 🗂️ Data persistence and management
+
+---
+
+🚀 Future Enhancements
+
+- 📱 Mobile responsive UI
+- ☁️ Cloud deployment (AWS / Render)
+- 🔐 Authentication system
+- 📈 Advanced ML model
+- 🧾 Downloadable medical reports (PDF)
+
+---
+
+📁 Project Structure
+
+brain-tumor-detection/
 │
-├── src/main/java/com/brain/tumor/
+├── backend/
 │   ├── controller/
 │   ├── service/
-│   ├── model/
 │   ├── repository/
+│   ├── model/
 │   └── Application.java
 │
-├── ai-model/
-│   ├── model.h5
-│   ├── test_model.py
-│   └── test.jpg
+├── frontend/
+│   └── index.html
+│
+├── screenshots/
 │
 └── README.md
-```
 
 ---
 
-## ⚙️ How It Works
+👨‍💻 Author
 
-1. User uploads an MRI image via API
-2. Spring Boot saves the file
-3. Java executes Python script using `ProcessBuilder`
-4. Python loads trained model (`model.h5`)
-5. Model predicts:
+Mayank Kumar Singh
 
-    * `TUMOR`
-    * `NO_TUMOR`
-6. Result is returned to API response
+- 💻 Full Stack Developer (Java + AI)
+- 🚀 Passionate about building real-world applications
 
 ---
 
-## 📡 API Endpoint
+⭐ Support
 
-### 🔹 Predict Tumor
+If you like this project:
 
-```
-POST /api/predict
-```
-
-### 📥 Request (form-data)
-
-| Key  | Type | Value     |
-| ---- | ---- | --------- |
-| file | File | image.jpg |
+👉 Give it a ⭐ on GitHub
+👉 Share it with others
 
 ---
 
-### 📤 Response
+💡 Recruiter Note
 
-```
-TUMOR
-```
+This project demonstrates:
 
-or
-
-```
-NO_TUMOR
-```
+- Full Stack Development (Frontend + Backend)
+- AI Integration in production-like system
+- REST API design
+- UI/UX problem solving
+- Real-world application thinking
 
 ---
-
-## ▶️ How to Run
-
-### 1. Clone Repository
-
-```
-git clone https://github.com/Mayank-wind/brain-tumor-detection-system.git
-cd brain-tumor-detection-system
-```
-
----
-
-### 2. Run Spring Boot
-
-Run `Application.java`
-
----
-
-### 3. Run API (Postman)
-
-* URL: `http://localhost:8080/api/predict`
-* Method: `POST`
-* Body: `form-data`
-* Key: `file` → upload image
-
----
-
-## 🧪 Example
-
-Upload MRI image → API returns:
-
-```
-TUMOR
-```
-
----
-
-## API Testing
-
-This project provides a REST API to detect brain tumors from MRI images.
-
-### Endpoint
-POST /api/predict
-
-### Request
-- Method: POST
-- Content-Type: multipart/form-data
-- Body: Image file
-
-### Example (Postman)
-
-![API Result](screenshots/api-prediction-result.png)
-
-### Response
-- TUMOR → Tumor detected
-- NO_TUMOR → No tumor detected
-
-## ⚠️ Notes
-
-* Ensure Python is installed
-* Update Python path in `ProcessBuilder`
-* Model file (`model.h5`) must exist in `ai-model/`
-
----
-
-## 🔥 Future Improvements
-
-* Add frontend (React / Angular)
-* Return confidence score
-* Deploy on cloud (AWS / Render)
-* Convert to microservices
-* Add authentication
-
----
-
-## 👨‍💻 Author
-
-**Mayank Kumar Singh**
-
----
-
-## ⭐ If you like this project
-
-Give it a ⭐ on GitHub!
