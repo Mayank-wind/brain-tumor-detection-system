@@ -325,9 +325,10 @@
         <input type="file" id="fileInput" onchange="handleFileSelect()">
     </div>
 
-    <button id="predictBtn" onclick="uploadImage()">Predict</button>
-    <button id="downloadBtn" style="display:none;">⬇️ Download Report</button>
-
+    <button id="predictBtn" onclick="uploadImage()">😊Predict</button>
+    <div style="text-align: right; margin-top: 10px;">
+    <button id="downloadBtn" style="display:none;">📬 Download Report</button>
+    </div>
     <div id="result"></div>
     <div id="aiReport" class="report-card" style="display:none;"></div>
 
@@ -342,7 +343,6 @@
     function toggleChat() {
         const chat = document.getElementById("chatSidebar");
         const arrow = document.getElementById("chatArrow");
-
         const isOpen = chat.classList.contains("open");
 
         if (isOpen) {
@@ -357,7 +357,6 @@
     function toggleHistory() {
         const history = document.getElementById("historySidebar");
         const arrow = document.getElementById("historyArrow");
-
         const isOpen = history.classList.contains("open");
 
         if (isOpen) {
@@ -384,6 +383,8 @@
 
     const formData = new FormData();
     formData.append("file", file);
+    const testName = document.getElementById("testName").value;
+    formData.append("testName", testName);
 
     const result = document.getElementById("result");
     result.innerText = "🤐 Processing...";
@@ -395,7 +396,6 @@
         });
 
         const data = await res.json();
-
         lastPrediction = data.prediction;
         lastConfidence = data.confidence;
         document.getElementById("downloadBtn").style.display = "block";
@@ -424,14 +424,12 @@
     async function loadHistory() {
         const res = await fetch("http://localhost:8080/api/history");
         const data = await res.json();
-
         const list = document.getElementById("historyList");
         list.innerHTML = "";
 
         data.forEach(item => {
             const card = document.createElement("div");
             card.className = "history-card";
-
             const confidence = (item.confidence * 100).toFixed(2);
 
             card.innerHTML = `
@@ -543,7 +541,6 @@ report.innerHTML = `
 
     function resetButton() {
     const btn = document.getElementById("predictBtn");
-
     btn.innerText = "Predict";
     btn.disabled = false;
 }
@@ -560,7 +557,7 @@ report.innerHTML = `
 
     if (file) {
         fileName.innerText = "🫣 " + file.name;
-        resetButton(); // your existing function
+        resetButton();
     }
 }
     async function deleteHistory(id) {
