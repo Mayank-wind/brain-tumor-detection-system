@@ -326,6 +326,7 @@
     </div>
 
     <button id="predictBtn" onclick="uploadImage()">Predict</button>
+    <button id="downloadBtn" style="display:none;">⬇️ Download Report</button>
 
     <div id="result"></div>
     <div id="aiReport" class="report-card" style="display:none;"></div>
@@ -336,6 +337,7 @@
     let chatHistory = [];
     let lastPrediction = "";
     let lastConfidence = 0;
+
 
     function toggleChat() {
         const chat = document.getElementById("chatSidebar");
@@ -396,6 +398,7 @@
 
         lastPrediction = data.prediction;
         lastConfidence = data.confidence;
+        document.getElementById("downloadBtn").style.display = "block";
 
         if (data.prediction === "TUMOR") {
             result.innerText = "🤦‍♂️ Tumor Detected (" + (data.confidence * 100).toFixed(2) + "%)";
@@ -567,6 +570,25 @@ report.innerHTML = `
 
     loadHistory();
 }
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+    const content = `
+Brain Tumor Detection Report
+----------------------------
+Result: ${lastPrediction}
+Confidence: ${(lastConfidence * 100).toFixed(2)}%
+Date: ${new Date().toLocaleString()}
+`;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "report.txt";
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+});
 
 </script>
 
