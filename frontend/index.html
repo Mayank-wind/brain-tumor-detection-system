@@ -9,6 +9,7 @@
             margin: 0;
             font-family: Arial;
             background: linear-gradient(to right, #667eea, #764ba2);
+            background-attachment: fixed;
         }
 
         .container {
@@ -16,11 +17,16 @@
             width: 500px;
             margin: 120px auto;
             padding: 40px;
-            background: white;
-            border-radius: 15px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
             text-align: center;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
-            z-index: 1;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.2),inset 0 0 10px rgba(255,255,255,0.3);
+            transition: 0.3s;
+        }
+
+        .container:hover{
+        transform: translateY(-5px);
         }
 
         .container * {
@@ -30,12 +36,13 @@
 
         .brain-bg {
             position: absolute;
-            width: 300px;
-            opacity: 0.08;
+            width: 250px;
+            opacity: 0.06;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 0;
+            pointer-events: none;
         }
 
         input, button {
@@ -45,19 +52,24 @@
         }
 
         button {
-            background: #2b6cb0;
-            color: white;
-            border: none;
-            cursor: pointer;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        }
+
+        button:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        opacity:0.9;
         }
 
         button {
         transition: 0.2s;
-        }
-
-        button:hover {
-        transform: scale(1.05);
-        opacity: 0.9;
         }
 
         button:hover {
@@ -67,6 +79,7 @@
         #result {
             margin-top: 20px;
             font-weight: bold;
+            transition: all 0.3s ease;
         }
 
         .sidebar {
@@ -277,6 +290,22 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+    .floating-download {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 20px;
+    display: none;
+    z-index: 3000;
+    background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .floating-download:hover {
+    transform: scale(1.1);
+    }
 
     </style>
 </head>
