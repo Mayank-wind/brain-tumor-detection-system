@@ -1,6 +1,7 @@
 package com.brain.tumor.service;
 import com.brain.tumor.dto.PredictionResponseDTO;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.client.RestTemplate;
@@ -10,11 +11,12 @@ import org.springframework.util.MultiValueMap;
 @Service
 public class PredictionService {
 
+    @Value("${app.python-api-url}")
+    private String pythonApiUrl;
+
     public PredictionResponseDTO getPrediction(MultipartFile file) {
 
         try {
-            String pythonApiUrl = "http://localhost:5000/predict";
-
             RestTemplate restTemplate = new RestTemplate();
 
             HttpHeaders headers = new HttpHeaders();

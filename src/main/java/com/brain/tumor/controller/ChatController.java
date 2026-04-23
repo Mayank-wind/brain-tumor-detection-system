@@ -1,5 +1,6 @@
 package com.brain.tumor.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -10,6 +11,9 @@ import java.util.Map;
 @RequestMapping("/api/chat")
 @CrossOrigin(origins = "*")
 public class ChatController {
+
+    @Value("${app.ollama-url}")
+    private String ollamaUrl;
 
     @PostMapping
     public String chat(@RequestBody Map<String,Object> request) {
@@ -54,7 +58,7 @@ public class ChatController {
                         "Keep it simple, safe, and informative.";
             }
 
-            URL url = new URL("http://localhost:11434/api/generate");
+            URL url = new URL(ollamaUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
