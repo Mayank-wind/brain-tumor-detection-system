@@ -4,8 +4,8 @@ import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 
-MODEL_PATH = "ai-model/my_model_simple_v2.h5"
-DATASET_PATH = "ai-model/dataset"
+MODEL_PATH = "ai-model/my_model_60_20_20.h5"
+DATASET_PATH = "ai-model/dataset_split/test"
 
 model = load_model(MODEL_PATH)
 
@@ -35,9 +35,7 @@ for actual_label in ["tumor", "no_tumor"]:
     folder_path = os.path.join(DATASET_PATH, actual_label)
 
     print(f"\nChecking folder: {actual_label}")
-
-    all_files = os.listdir(folder_path)
-    files = random.sample(all_files, 20)
+    files = os.listdir(folder_path)
 
     for file_name in files:
         image_path = os.path.join(folder_path, file_name)

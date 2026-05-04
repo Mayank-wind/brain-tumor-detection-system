@@ -42,3 +42,5 @@ __pycache__/
 #Images
 *.jpg
 *.png
+ai-model/dataset/
+ai-model/dataset_split/

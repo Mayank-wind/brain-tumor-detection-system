@@ -10,26 +10,22 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 IMAGE_SIZE = (256, 256)
 SEED = 42
 
-
-def create_datasets(dataset_dir, batch_size):
+def create_datasets(train_dir, val_dir, batch_size):
     train_ds = tf.keras.utils.image_dataset_from_directory(
-        dataset_dir,
-        validation_split=0.2,
-        subset="training",
-        seed=SEED,
+        train_dir,
         image_size=IMAGE_SIZE,
         batch_size=batch_size,
         label_mode="binary",
+        shuffle=True,
+        seed=SEED,
     )
 
     val_ds = tf.keras.utils.image_dataset_from_directory(
-        dataset_dir,
-        validation_split=0.2,
-        subset="validation",
-        seed=SEED,
+        val_dir,
         image_size=IMAGE_SIZE,
         batch_size=batch_size,
         label_mode="binary",
+        shuffle=False,
     )
 
     normalization = layers.Rescaling(1.0 / 255)
@@ -38,7 +34,6 @@ def create_datasets(dataset_dir, batch_size):
     val_ds = val_ds.map(lambda x, y: (normalization(x), y)).prefetch(tf.data.AUTOTUNE)
 
     return train_ds, val_ds
-
 
 def build_model():
     model = models.Sequential(
@@ -87,9 +82,14 @@ def save_training_metadata(output_dir, history):
 def main():
     parser = argparse.ArgumentParser(description="Train a binary brain tumor detection model.")
     parser.add_argument(
-        "--dataset-dir",
-        default=os.path.join(os.path.dirname(__file__), "dataset"),
-        help="Path to dataset folder containing tumor and no_tumor directories.",
+        "--train-dir",
+        default=os.path.join(os.path.dirname(__file__), "dataset_split", "train"),
+        help="Path to training dataset folder.",
+    )
+    parser.add_argument(
+        "--val-dir",
+        default=os.path.join(os.path.dirname(__file__), "dataset_split", "val"),
+        help="Path to validation dataset folder.",
     )
     parser.add_argument(
         "--output-model",
@@ -102,8 +102,7 @@ def main():
 
     output_dir = os.path.dirname(args.output_model) or "."
     os.makedirs(output_dir, exist_ok=True)
-
-    train_ds, val_ds = create_datasets(args.dataset_dir, args.batch_size)
+    train_ds, val_ds = create_datasets(args.train_dir, args.val_dir, args.batch_size)
     model = build_model()
 
     callbacks = [
